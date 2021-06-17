@@ -1,5 +1,6 @@
 const search = require("yt-search");
 const ytdl = require("ytdl-core-discord");
+const embed = require('discord.js');
 
 const execute = (client, msg, args) => {
   const s = args.join(" ");
@@ -56,6 +57,14 @@ const playSong = async (client, msg, song) => {
     queue.songs.shift();
     playSong(client, msg, queue.songs[0]);
   });
+  var msgmusic = new embed.MessageEmbed()
+    .setColor('#e1a700')
+    .setTitle('Está tocando:')
+    .setDescription(`**Música: ** ${song.title} (${song.timestamp})`);
+   var messagem = await msg.channel.send(msgmusic);
+
+   messagem.delete({ timeout: song.seconds*1000 });
+   
   client.queues.set(msg.member.guild.id, queue);
 };
 
