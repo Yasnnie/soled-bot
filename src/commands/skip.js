@@ -2,6 +2,7 @@ const playSong = require("./play").playSong;
 
 const execute = (client, msg, args) => {
   const queue = client.queues.get(msg.guild.id);
+  
   if (!queue) {
     return msg.reply("não existe nenhuma música sendo reproduzida");
   }

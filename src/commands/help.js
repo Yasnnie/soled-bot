@@ -1,6 +1,6 @@
 const execute = (client,msg,args) =>
 {
-    let string = "==== COMANDO ====\n";
+    let string = "==== COMANDOS: ====\n";
     client.commands.forEach((command) => {
         if(command.help)
         {
@@ -15,5 +15,4 @@ module.exports = {
     name: "help",
     help: "Mostra todos os comandos",
     execute,
-
-};
+}

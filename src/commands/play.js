@@ -3,8 +3,7 @@ const ytdl = require("ytdl-core-discord");
 
 const execute = (client, msg, args) => {
   const s = args.join(" ");
- 
-  console.log("Música adicionada: "+s);
+  console.log("---------------------------\nNOVA MÚSICA ADICIONADA\nUSER:"+msg.author.username+"\nNOME DA MÚSICA: "+s+"\nSERVIDOR:"+msg.guild.name+"\n---------------------------");
   try {
     search(s, (err, result) => {
       if (err) {

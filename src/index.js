@@ -32,6 +32,14 @@ client.on("ready", function(){
     console.log(`ESTOU CONECTADO by ${client.user.username}`);
 });
 
+//MEMBRO QUE ENTRA NO SERVIDOR (COM ROLE AUTOMATICA)
+client.on("guildMemberAdd", member => {
+    console.log(member.user.username + ':(' + member.user + ") entrou no servidor!");
+    member.guild.channels.cache.get('854034863749464076').send(member.user.username + ' entrou no servidor! Seja bem-vindo!!');
+    member.roles.add('757642838736502916');
+
+});
+
 client.on("message", (msg)=>{
 
    // if(!msg.content.startWith(process.env.PREFIX)) return;
