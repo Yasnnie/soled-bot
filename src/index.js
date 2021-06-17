@@ -2,6 +2,7 @@ const discord = require('discord.js');
 const dotenv = require('dotenv');
 const fs = require('fs');
 const path = require('path');
+const { OpusEncoder } = require('@discordjs/opus');
 
 dotenv.config();
 
