@@ -15,7 +15,7 @@ const commandFiles = fs.readdirSync(path.join(__dirname,"/commands")).filter(fil
 
 
 client.queues = new Map();
-
+client.starthsd = new Map();
 //ADICIONA OS COMANDOS
 for(var filename of commandFiles)
 {
