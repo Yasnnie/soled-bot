@@ -12,32 +12,42 @@ const execute = async (client, msg, args) => {
     // A PLAYLIST TA SAINDO DE FORMA ALEATÓRIA E FALTANDO MÚSICAS
     const plID = await ytpl.getPlaylistID(s);
     const pl = await ytpl(plID);
-    var playadd = [];
-    pl.items.map(async musica => {
-      const music = await search(musica.shortUrl);
+    let playadd = [];
+   
+    for(var k = 0; k<pl.items.length; k++)
+    {
+      const music = await search(pl.items[k].title);
        playadd.push(music.videos[0]);
-    });
+    }
+    
     const queue = client.queues.get(msg.guild.id);
     if(queue)
     {
-      playadd.map(song=> {
-      queue.songs.push(song);
-     });
+
+     console.log(playadd.length);
+     for(var j = 0; j<playadd.length; j++)
+     {
+      queue.songs.push(playadd[j]);
+     }
+     
+     
       client.queues.set(msg.guild.id, queue);
     }
     else
     {
+     
       await createQueue(msg,client,playadd[0]);
       await playSong(client, msg, playadd[0]);
-      const queue = client.queues.get(msg.guild.id);
+      const newqueue = client.queues.get(msg.guild.id);
+      console.log(playadd.length);
       for(var i =1; i<playadd.length;i++)
       {
-        queue.songs.push(playadd[i]);
+        newqueue.songs.push(playadd[i]);
       }
-      client.queues.set(msg.guild.id, queue);
+      client.queues.set(msg.guild.id, newqueue);
     }
 
-    console.log("entrei na play list");
+
   } else {
     const song = await search(s);
 
