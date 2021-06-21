@@ -9,39 +9,37 @@ const execute = async (client, msg, args) => {
   const s = args.join(" ");
 
   if (ytpl.validateID(s)) {
-    // A PLAYLIST TA SAINDO DE FORMA ALEATÓRIA E FALTANDO MÚSICAS
+
     const plID = await ytpl.getPlaylistID(s);
     const pl = await ytpl(plID);
     let playadd = [];
-   
-    for(var k = 0; k<pl.items.length; k++)
-    {
+    console.log("---------------------------\nNOVA PLAYLIST ADICIONADA\nUSER:" + msg.author.username + "\nNOME DA PLAYLIST: " + pl.title + "\nQUANTIDADE DE MÚSICA:" + pl.estimatedItemCount + "\nSERVIDOR:" + msg.guild.name + "\n---------------------------");
+    for (var k = 0; k < pl.items.length; k++) {
       const music = await search(pl.items[k].title);
-       playadd.push(music.videos[0]);
+      playadd.push(music.videos[0]);
     }
-    
-    const queue = client.queues.get(msg.guild.id);
-    if(queue)
-    {
 
-     console.log(playadd.length);
-     for(var j = 0; j<playadd.length; j++)
-     {
-      queue.songs.push(playadd[j]);
-     }
-     
-     
+    const queue = client.queues.get(msg.guild.id);
+    if (queue) {
+
+      console.log(playadd.length);
+      for (var j = 0; j < playadd.length; j++) {
+        queue.songs.push(playadd[j]);
+      }
+
+
       client.queues.set(msg.guild.id, queue);
     }
-    else
-    {
+    else {
+
+      if (msg.member.voice.channel){
+        await createQueue(msg, client, playadd[0]);
+        } else return msg.reply( "você precisa estar em um canal de voz para reproduzir uma música!");
      
-      await createQueue(msg,client,playadd[0]);
       await playSong(client, msg, playadd[0]);
       const newqueue = client.queues.get(msg.guild.id);
       console.log(playadd.length);
-      for(var i =1; i<playadd.length;i++)
-      {
+      for (var i = 1; i < playadd.length; i++) {
         newqueue.songs.push(playadd[i]);
       }
       client.queues.set(msg.guild.id, newqueue);
@@ -50,17 +48,20 @@ const execute = async (client, msg, args) => {
 
   } else {
     const song = await search(s);
-
-    const queue = client.queues.get(msg.guild.id);
-    if (queue) {
-      console.log("queue");
-      queue.songs.push(song.videos[0]);
-      client.queues.set(msg.guild.id, queue);
-    } else {
-      await createQueue(msg,client,song.videos[0]);
-      await playSong(client, msg, song.videos[0]);
-    };
-    
+    if (!song) { return msg.reply("Desculpe, não achei essa música."); }
+    else {
+      console.log("---------------------------\nNOVA MÚSICA ADICIONADA\nUSER:" + msg.author.username + "\nNOME DA MÚSICA: " + s + "\nSERVIDOR:" + msg.guild.name + "\n---------------------------");
+      const queue = client.queues.get(msg.guild.id);
+      if (queue) {
+        queue.songs.push(song.videos[0]);
+        client.queues.set(msg.guild.id, queue);
+      } else {
+        if (msg.member.voice.channel){
+        await createQueue(msg, client, song.videos[0]);
+        } else return msg.reply( "você precisa estar em um canal de voz para reproduzir uma música!");
+        await playSong(client, msg, song.videos[0]);
+      };
+    }
   }
 
 };
@@ -75,7 +76,9 @@ const playSong = async (client, msg, song) => {
       return client.queues.delete(msg.member.guild.id);
     }
   }
-  if (!msg.member.voice.channel) {
+
+
+  if (!msg.member.voice.channel && !queue.connection) {
     return msg.reply(
       "você precisa estar em um canal de voz para reproduzir uma música!"
     );
@@ -103,8 +106,7 @@ const playSong = async (client, msg, song) => {
 };
 
 
-const createQueue = async (msg,client,song) =>
-{
+const createQueue = async (msg, client, song) => {
   const conn = await msg.member.voice.channel.join();
   queue = {
     volume: 10,
