@@ -2,7 +2,7 @@ const search = require("yt-search");
 const ytdl = require("ytdl-core-discord");
 const ytpl = require('ytpl');
 const embed = require('discord.js');
-const { reset } = require("nodemon");
+
 
 const execute = async (client, msg, args) => {
 
