@@ -98,10 +98,12 @@ const playSong = async (client, msg, song) => {
     .setColor('#e1a700')
     .setTitle('Está tocando:')
     .setDescription(`**Música: ** ${song.title} (${song.timestamp})`);
-  var messagem = await msg.channel.send(msgmusic);
+   queue.embed = await msg.channel.send(msgmusic);
 
-  messagem.delete({ timeout: song.seconds * 1000 });
-
+   if(queue.embed)
+   {
+   queue.embed.delete({ timeout: song.seconds * 1000 });
+   }
   client.queues.set(msg.member.guild.id, queue);
 };
 
@@ -113,6 +115,7 @@ const createQueue = async (msg, client, song) => {
     connection: conn,
     dispatcher: null,
     songs: [song],
+    embed: null,
   };
   client.queues.set(msg.member.guild.id, queue);
 }

@@ -6,6 +6,7 @@ const execute = (client, msg, args) => {
   if (!queue) {
     return msg.reply("não existe nenhuma música sendo reproduzida");
   }
+  queue.embed.delete();
   queue.songs.shift();
   client.queues.set(msg.guild.id, queue);
   playSong(client, msg, queue.songs[0]);
